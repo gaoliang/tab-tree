@@ -1,42 +1,67 @@
 /* global chrome */
-import React from 'react';
-import logo from "./logo.svg";
+import React from "react";
 import "./App.css";
+import { Tree } from "antd";
+import {
+  DownOutlined
+} from "@ant-design/icons";
+
+function flatTreeToMap(roots) {
+  let result = {}
+  function each(nodes){
+    for(let node of nodes){
+     if(node.children){
+        result[node.id] = node
+        each(node.children);
+     }
+   }
+ }
+ each(roots)
+ return result;
+}
+
 
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       value: null,
+      treeData:  []
     };
   }
   componentDidMount() {
-    this.fetchTabs()
+    this.fetchTabs();
   }
 
-  fetchTabs() {
-    chrome.storage.local.get(['tabMap', 'roots'], function(result) {
-      console.log('tabMap currently is ' + result.tabMap);
-      console.log('roots currently is ' + result.roots);
+  async fetchTabs() {
+    let that = this;
+    chrome.storage.local.get(["roots"], function (result) {
+      let roots = result.roots;
+      let tabMap =  flatTreeToMap(roots)
+      chrome.tabs.query({}, tabs => {
+        tabs.forEach(tab => {
+          tabMap[tab.id].title = tab.title
+        });
+        console.log("roots", roots)
+        console.log("tabMap", tabMap)
+        that.setState({
+          treeData: result.roots
+        })
+      })
     });
   }
   render() {
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+        <Tree
+          fieldNames = {{title: 'title', key: 'id', children: 'children'}}
+          showIcon
+          showLine
+          blockNode
+          icon = {(props) => {<div>hello</div>}}
+          switcherIcon={<DownOutlined />}
+          treeData={this.state.treeData}
+        />
       </div>
     );
   }

@@ -9,7 +9,7 @@ function init() {
         var tabObj = {
           id: tab.id, 
           windowId: tab.windowId,
-          child: []
+          children: []
         }
         tabMap[tabObj.id] = tabObj
         roots.push(tabObj)
@@ -26,18 +26,18 @@ chrome.tabs.onCreated.addListener(function(tab) {
     id: tab.id, 
     windowId: tab.windowId,
     openerTabId: tab.openerTabId,
-    child: []
+    children: []
   }
   tabMap[tabObj.id] = tabObj
   if (!tab.openerTabId) {
     roots.push(tabObj)
   } else {
-    // get parent and set as child
-    tabMap[tabObj.openerTabId].child.push(tabObj)
+    // get parent and set as children
+    tabMap[tabObj.openerTabId].children.push(tabObj)
   }
   console.log(tabMap)
   console.log(roots)
-  chrome.storage.local.set({ tabMap, roots });
+  chrome.storage.local.set({ roots });
 })
 
 chrome.tabs.onRemoved.addListener(function(removedTabId, removeInfo) {
@@ -47,8 +47,8 @@ chrome.tabs.onRemoved.addListener(function(removedTabId, removeInfo) {
 
   let openerTabId = removedTab.openerTabId;
   if (openerTabId) {
-    let index = tabMap[openerTabId].child.findIndex((childTab) => childTab.id === removedTab.id)
-    tabMap[openerTabId].child.splice(index, 1)
+    let index = tabMap[openerTabId].children.findIndex((childTab) => childTab.id === removedTab.id)
+    tabMap[openerTabId].children.splice(index, 1)
   }
 
   delete tabMap[removedTabId];
@@ -59,5 +59,5 @@ chrome.tabs.onRemoved.addListener(function(removedTabId, removeInfo) {
   }
   console.log(tabMap)
   console.log(roots)
-  chrome.storage.local.set({ tabMap, roots });
+  chrome.storage.local.set({ roots });
 })
