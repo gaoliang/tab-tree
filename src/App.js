@@ -2,9 +2,7 @@
 import React from "react";
 import "./App.css";
 import { Tree } from "antd";
-import {
-  DownOutlined
-} from "@ant-design/icons";
+import Icon from "@ant-design/icons";
 
 function flatTreeToMap(roots) {
   let result = {}
@@ -41,6 +39,7 @@ class App extends React.Component {
       chrome.tabs.query({}, tabs => {
         tabs.forEach(tab => {
           tabMap[tab.id].title = tab.title
+          tabMap[tab.id].icon = <Icon component={() => (<img src={tab.favIconUrl} alt="favicon" style={{width: '1rem', height: '1rem', display: 'inline-block'}}/>)} />
         });
         console.log("roots", roots)
         console.log("tabMap", tabMap)
@@ -53,15 +52,16 @@ class App extends React.Component {
   render() {
     return (
       <div className="App">
-        <Tree
-          fieldNames = {{title: 'title', key: 'id', children: 'children'}}
-          showIcon
-          showLine
-          blockNode
-          icon = {(props) => {<div>hello</div>}}
-          switcherIcon={<DownOutlined />}
-          treeData={this.state.treeData}
-        />
+        { this.state.treeData.length > 0 ? 
+          <Tree
+            fieldNames = {{title: 'title', key: 'id', children: 'children'}}
+            showIcon
+            showLine = {{showLeafIcon: false}}
+            blockNode
+            defaultExpandAll
+            treeData={this.state.treeData}
+          />
+          : '暂无数据'}
       </div>
     );
   }
