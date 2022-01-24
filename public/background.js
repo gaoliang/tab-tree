@@ -4,7 +4,7 @@ chrome.tabs.onCreated.addListener(tab =>  {
   chrome.storage.local.get(['openerTabIdMap'], result => {
     console.log("new tab ", tab)
     let openerTabIdMap = result.openerTabIdMap || {}
-    if(tab.openerTabId) {
+    if(tab.pendingUrl !== "chrome://newtab/" && tab.openerTabId) {
       openerTabIdMap[tab.id] = tab.openerTabId
     }
     console.log("openerTabIdMap: ", openerTabIdMap)

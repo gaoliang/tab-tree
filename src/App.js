@@ -1,9 +1,11 @@
 /* global chrome */
 import React from "react";
 import "./App.css";
-import { Tree, Card, Typography } from "antd";
-import Icon from "@ant-design/icons";
+import { Tree, Card, Typography, Image } from "antd";
+import Icon, { DownOutlined } from "@ant-design/icons";
 import { GithubOutlined } from '@ant-design/icons';
+import faviconNewtabIcon from './favicon_newtab.png';
+
 const { Text } = Typography;
 
 
@@ -20,14 +22,12 @@ function buildTabObj(chromeTab) {
     tabObj.icon = (
       <Icon
         component={() => (
-          <img
+            <Image
+            width={'1rem'}
+            height={'1rem'}
+            preview={false}
             src={chromeTab.favIconUrl}
-            alt="favicon"
-            style={{
-              width: "1rem",
-              height: "1rem",
-              display: "inline-block",
-            }}
+            fallback={faviconNewtabIcon}
           />
         )}
       />
@@ -56,9 +56,7 @@ class App extends React.Component {
           let openerTabIdMap = result.openerTabIdMap || {}
           tabs.forEach(tab => {
             let tabObj = buildTabObj(tab)
-            if (openerTabIdMap[tab.id]) {
-              tabObj.openerTabId = openerTabIdMap[tab.id]
-            }
+            tabObj.openerTabId = openerTabIdMap[tab.id]
             tabMap[tabObj.id] = tabObj
             if(tabObj.openerTabId) {
               tabMap[tabObj.openerTabId].children.push(tabObj)
@@ -68,7 +66,6 @@ class App extends React.Component {
           })
           this.setState({ roots, openerTabIdMap });
         })
-        
       }
     )
   }
@@ -86,6 +83,7 @@ class App extends React.Component {
               fieldNames={{ title: "title", key: "id", children: "children" }}
               showIcon
               showLine={{ showLeafIcon: false }}
+              switcherIcon={<DownOutlined />}
               blockNode
               defaultExpandAll
               treeData={this.state.roots}
