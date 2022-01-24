@@ -1,63 +1,28 @@
 /* global chrome */
-let roots = []
-let tabMap = {}
 
-function init() {
-  chrome.tabs.query(
-    {}, function (tabs)  {
-      tabs.forEach(tab => {
-        var tabObj = {
-          id: tab.id, 
-          windowId: tab.windowId,
-          children: []
-        }
-        tabMap[tabObj.id] = tabObj
-        roots.push(tabObj)
-      })
-      chrome.storage.local.set({ tabMap, roots });
+chrome.tabs.onCreated.addListener(tab =>  {
+  chrome.storage.local.get(['openerTabIdMap'], result => {
+    console.log("new tab ", tab)
+    let openerTabIdMap = result.openerTabIdMap || {}
+    if(tab.openerTabId) {
+      openerTabIdMap[tab.id] = tab.openerTabId
     }
-  )
-}
-
-init()
-
-chrome.tabs.onCreated.addListener(function(tab) {
-  var tabObj = {
-    id: tab.id, 
-    windowId: tab.windowId,
-    openerTabId: tab.openerTabId,
-    children: []
-  }
-  tabMap[tabObj.id] = tabObj
-  if (!tab.openerTabId) {
-    roots.push(tabObj)
-  } else {
-    // get parent and set as children
-    tabMap[tabObj.openerTabId].children.push(tabObj)
-  }
-  console.log(tabMap)
-  console.log(roots)
-  chrome.storage.local.set({ roots });
+    console.log("openerTabIdMap: ", openerTabIdMap)
+    chrome.storage.local.set({ openerTabIdMap });
+  })
 })
 
-chrome.tabs.onRemoved.addListener(function(removedTabId, removeInfo) {
-  // tab may not inclueded in our db
-  if (!tabMap[removedTabId]) return;
-  let removedTab = tabMap[removedTabId];
-
-  let openerTabId = removedTab.openerTabId;
-  if (openerTabId) {
-    let index = tabMap[openerTabId].children.findIndex((childTab) => childTab.id === removedTab.id)
-    tabMap[openerTabId].children.splice(index, 1)
-  }
-
-  delete tabMap[removedTabId];
-
-  let indexInRoot = roots.findIndex((rootTab) => rootTab.id === removedTab.id)
-  if (indexInRoot !== -1)  {
-    roots.splice(indexInRoot, 1)
-  }
-  console.log(tabMap)
-  console.log(roots)
-  chrome.storage.local.set({ roots });
+chrome.tabs.onRemoved.addListener((removedTabId, removeInfo) => {
+  chrome.storage.local.get(['openerTabIdMap'], result => {
+    console.log("remove tab ", removedTabId)
+    let openerTabIdMap = result.openerTabIdMap || {}
+    let openerTabId = openerTabIdMap[removedTabId]
+    Object.keys(openerTabIdMap).forEach(key => {
+      if(openerTabIdMap[key] === removedTabId) {
+          openerTabIdMap[key] = openerTabId
+      }
+    });
+    delete openerTabIdMap[removedTabId]
+    chrome.storage.local.set({ openerTabIdMap });
+  })
 })
