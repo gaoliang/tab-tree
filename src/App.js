@@ -3,11 +3,10 @@ import React from "react";
 import "./App.css";
 import { Tree, Card, Typography, Image } from "antd";
 import Icon, { DownOutlined } from "@ant-design/icons";
-import { GithubOutlined } from '@ant-design/icons';
+import { GithubOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import faviconNewtabIcon from './favicon_newtab.png';
 
 const { Text } = Typography;
-
 
 function buildTabObj(chromeTab) {
   console.log("chromeTab: ", chromeTab)
@@ -16,22 +15,8 @@ function buildTabObj(chromeTab) {
     windowId: chromeTab.windowId,
     openerTabId: chromeTab.openerTabId,
     children: [],
-    title: chromeTab.title
-  }
-  if(chromeTab.favIconUrl) {
-    tabObj.icon = (
-      <Icon
-        component={() => (
-            <Image
-            width={'1rem'}
-            height={'1rem'}
-            preview={false}
-            src={chromeTab.favIconUrl}
-            fallback={faviconNewtabIcon}
-          />
-        )}
-      />
-    );
+    title: chromeTab.title,
+    favIconUrl: chromeTab.favIconUrl
   }
   return tabObj;
 }
@@ -81,16 +66,26 @@ class App extends React.Component {
           {this.state.roots.length > 0 ? (
             <Tree
               fieldNames={{ title: "title", key: "id", children: "children" }}
-              showIcon
+              // showIcon
               showLine={{ showLeafIcon: false }}
               switcherIcon={<DownOutlined />}
               blockNode
               defaultExpandAll
               treeData={this.state.roots}
-              titleRender = {(nodeData) => (<span><Text
-                style={{ width: 400 }}
-                ellipsis={{tooltip: nodeData.title }}
-              > {nodeData.title} </Text></span>)}
+              titleRender = {(nodeData) => (<div style={{display: 'flex', 'justify-content': 'space-between', }}>
+              <div className="tree-node-title">
+                  <Image
+                  width={'1rem'}
+                  height={'1rem'}
+                  preview={false}
+                  src={nodeData.favIconUrl}
+                  fallback={faviconNewtabIcon}
+                />
+                {nodeData.title}
+              </div>
+              <CloseCircleOutlined />
+              
+              </div>)}
               onSelect={function(selectedKeys) {chrome.tabs.update(selectedKeys[0], {active: true})}}
             />
           ) : ( "暂无数据" )}
