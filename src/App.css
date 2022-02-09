@@ -1,9 +1,26 @@
 @import '~antd/dist/antd.css';
 
+.App {
+    height: 100%;
+}
 .tree-node-title {
     flex: 1;
     width: 0;
     text-overflow: ellipsis;
     overflow-x: hidden;
     white-space: nowrap
+}
+.ant-card {
+    display: flex;
+    flex-direction: column;
+}
+
+.ant-card-head {
+    
+}
+
+.ant-card-body {
+    padding-top: 1px !important;
+    flex: 1;
+    overflow-y: scroll;
 }

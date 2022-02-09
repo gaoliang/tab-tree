@@ -1,4 +1,6 @@
-# Getting Started with Create React App
+# Tab Tree
+
+A tree view of your browser tabs.
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 

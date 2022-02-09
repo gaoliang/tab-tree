@@ -3,7 +3,15 @@
   "description": "Tree view for your browser tabs",
   "version": "1.0",
   "manifest_version": 3,
-  "permissions": ["tabs", "storage"],
+  "permissions": [
+    "tabs",
+    "storage"
+  ],
+  "icons": {
+    "16": "icon/icon16.png",
+    "48": "icon/icon48.png",
+    "128": "icon/icon128.png"
+  },
   "action": {
     "default_popup": "index.html"
   },
