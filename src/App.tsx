@@ -1,15 +1,28 @@
-/* global chrome */
-import React from "react";
+import React, { Component } from "react";
 import "./App.css";
 import { Tree, Card, Image } from "antd";
-import { DownOutlined } from "@ant-design/icons";
-import { GithubOutlined, CloseCircleOutlined } from '@ant-design/icons';
+import { DownOutlined, GithubOutlined, CloseCircleOutlined } from "@ant-design/icons";
 import faviconNewtabIcon from './favicon_newtab.png';
 
-function buildTabObj(chromeTab) {
+interface TabObj {
+  id: number;
+  windowId: number;
+  openerTabId?: number;
+  children: TabObj[];
+  title?: string;
+  favIconUrl?: string;
+}
+
+interface AppState {
+  value: null;
+  roots: TabObj[];
+  tabMap: Record<number, TabObj>;
+}
+
+function buildTabObj(chromeTab: chrome.tabs.Tab): TabObj {
   console.log("chromeTab: ", chromeTab)
-  let tabObj = {
-    id: chromeTab.id, 
+  let tabObj: TabObj = {
+    id: chromeTab.id!, 
     windowId: chromeTab.windowId,
     openerTabId: chromeTab.openerTabId,
     children: [],
@@ -19,46 +32,61 @@ function buildTabObj(chromeTab) {
   return tabObj;
 }
 
-class App extends React.Component {
-  constructor(props) {
+class App extends Component<{}, AppState> {
+  constructor(props: {}) {
     super(props);
     this.state = {
       value: null,
       roots: [],
+      tabMap: {}
     };
   }
+  
   componentDidMount() {
     this.initTree();
   }
 
   initTree() {
-    let tabMap = {}
-    let roots = []
+    let tabMap: Record<number, TabObj> = {}
+    let roots: TabObj[] = []
     chrome.tabs.query({}, tabs =>  {
         chrome.storage.local.get(['openerTabIdMap'], result =>  {
           let openerTabIdMap = result.openerTabIdMap || {}
+
+          // 1. Create all TabObjs
           tabs.forEach(tab => {
-            let tabObj = buildTabObj(tab)
-            tabObj.openerTabId = openerTabIdMap[tab.id]
-            tabMap[tabObj.id] = tabObj
-            if(tabObj.openerTabId) {
-              tabMap[tabObj.openerTabId].children.push(tabObj)
-            } else {
-              roots.push(tabObj)
+            if (!tab.id) return;
+            let tabObj = buildTabObj(tab);
+            // Use stored openerTabId if available
+            if (openerTabIdMap[tab.id]) {
+                tabObj.openerTabId = openerTabIdMap[tab.id];
             }
-          })
+            tabMap[tabObj.id] = tabObj;
+          });
+
+          // 2. Link them
+          Object.values(tabMap).forEach(tabObj => {
+             if (tabObj.openerTabId && tabMap[tabObj.openerTabId]) {
+                 tabMap[tabObj.openerTabId].children.push(tabObj);
+             } else {
+                 roots.push(tabObj);
+             }
+          });
+
           this.setState({ roots, tabMap });
         })
       }
     )
   }
   
-  closeTabInner(tabId) {
+  closeTabInner(tabId: number) {
       let currentTab = this.state.tabMap[tabId];
-      let visited = [], queue = [];
+      if (!currentTab) return;
+      
+      let visited: number[] = [], queue: TabObj[] = [];
       queue.push(currentTab);
       while (queue.length) {
-        currentTab = queue.shift();
+        currentTab = queue.shift()!;
         visited.push(currentTab.id);
         if (currentTab.children) queue.push(...currentTab.children);
       };
@@ -84,22 +112,24 @@ class App extends React.Component {
               blockNode
               defaultExpandAll
               treeData={this.state.roots}
-              titleRender = {(nodeData) => (<div style={{display: 'flex', 'justify-content': 'space-between', }}>
-              <div className="tree-node-title" onClick={() => {chrome.tabs.update(nodeData.id, {active: true})}}>
+              titleRender = {(nodeData: any) => {
+                  const node = nodeData as TabObj;
+                  return (<div style={{display: 'flex', justifyContent: 'space-between', }}>
+              <div className="tree-node-title" onClick={() => {chrome.tabs.update(node.id, {active: true})}}>
                   <Image
                   width={'1rem'}
                   height={'1rem'}
                   preview={false}
-                  src={nodeData.favIconUrl}
+                  src={node.favIconUrl}
                   fallback={faviconNewtabIcon}
                 />
-                {nodeData.title}
+                {node.title}
               </div>
-              <div onClick={() => {this.closeTabInner(nodeData.id)}}>
+              <div onClick={() => {this.closeTabInner(node.id)}}>
                 <CloseCircleOutlined />
               </div>
               
-              </div>)}
+              </div>)}}
             />
           ) : ( "暂无数据" )}
         </Card>
