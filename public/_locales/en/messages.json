@@ -1,0 +1,29 @@
+{
+  "extName": {
+    "message": "Tab Tree"
+  },
+  "extDesc": {
+    "message": "Tree view for your browser tabs"
+  },
+  "searchPlaceholder": {
+    "message": "Search tabs"
+  },
+  "closeTree": {
+    "message": "Close tree"
+  },
+  "closeCurrent": {
+    "message": "Close current tab"
+  },
+  "closeChildren": {
+    "message": "Close children only"
+  },
+  "moveToNewWindow": {
+    "message": "Move to new window"
+  },
+  "emptyState": {
+    "message": "No tabs found"
+  },
+  "sourceCode": {
+    "message": "Source code"
+  }
+}

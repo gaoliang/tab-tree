@@ -1,0 +1,29 @@
+{
+  "extName": {
+    "message": "Tab Tree 标签页树"
+  },
+  "extDesc": {
+    "message": "自动整理浏览器标签页层级关系"
+  },
+  "searchPlaceholder": {
+    "message": "搜索标签页"
+  },
+  "closeTree": {
+    "message": "关闭当前及子标签页"
+  },
+  "closeCurrent": {
+    "message": "仅关闭当前标签页"
+  },
+  "closeChildren": {
+    "message": "仅关闭子标签页"
+  },
+  "moveToNewWindow": {
+    "message": "在新窗口打开"
+  },
+  "emptyState": {
+    "message": "未找到相关标签页"
+  },
+  "sourceCode": {
+    "message": "源码仓库"
+  }
+}

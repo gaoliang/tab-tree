@@ -8,17 +8,17 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "antd": "^5.12.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "antd": "^5.22.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
   },
   "devDependencies": {
-    "@crxjs/vite-plugin": "^2.0.0-beta.21",
+    "@crxjs/vite-plugin": "^2.3.0",
     "@types/chrome": "^0.0.254",
-    "@types/react": "^18.2.43",
-    "@types/react-dom": "^18.2.17",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
     "@vitejs/plugin-react": "^4.2.1",
-    "typescript": "^5.2.2",
-    "vite": "^5.0.8"
+    "typescript": "^5.3.3",
+    "vite": "^6.0.0"
   }
 }
