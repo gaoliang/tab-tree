@@ -1,6 +1,7 @@
 # Tab Tree
 
 [![GitHub](https://img.shields.io/badge/GitHub-Source-181717?logo=github)](https://github.com/gaoliang/tab-tree)
+[![Chrome Web Store](https://img.shields.io/chrome-web-store/v/fkpiebfdeocdoofjfhmaidhhbkmbfgjl?label=Chrome%20Web%20Store&logo=google-chrome&logoColor=white)](https://chromewebstore.google.com/detail/tab-tree/fkpiebfdeocdoofjfhmaidhhbkmbfgjl)
 
 [中文](#-tab-tree-标签页树) | [English](#-tab-tree)
 
@@ -22,7 +23,7 @@
 ## 🚀 Installation
 
 ### Option 1: Chrome Web Store
-*(Coming Soon)*
+[Install from Chrome Web Store](https://chromewebstore.google.com/detail/tab-tree/fkpiebfdeocdoofjfhmaidhhbkmbfgjl)
 
 ### Option 2: Manual Installation (Developer Mode)
 1. Download the source code from [GitHub Repository](https://github.com/gaoliang/tab-tree).
@@ -75,7 +76,7 @@ npm run build
 ## 🚀 安装使用
 
 ### 方式一：从 Chrome 应用商店安装
-*(待发布)*
+[点击前往 Chrome 应用商店安装](https://chromewebstore.google.com/detail/tab-tree/fkpiebfdeocdoofjfhmaidhhbkmbfgjl)
 
 ### 方式二：手动安装（开发者模式）
 1. 下载本仓库源码：[GitHub Repository](https://github.com/gaoliang/tab-tree)。
